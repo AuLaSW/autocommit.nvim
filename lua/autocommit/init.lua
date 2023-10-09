@@ -35,7 +35,7 @@ M.create_commit = function ()
     local dir = vim.cmd([[
     let dir = FugitiveGitDir()
     let _ = FugitiveExecute(["add", "."], dir)
-    let _ = FugitiveExecute(["commit", "-m", "test"], dir )
+    let _ = FugitiveExecute(["commit", "-m", "]]..M.commit.header()..[[", "-m", "]]..M.commit.body()..[["], dir )
     ]])
 end
 
