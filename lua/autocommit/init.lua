@@ -1,25 +1,20 @@
--- A plugin for creating autocommits while you are working on a pojrect
+-- A plugin for creating autocommits while you are working on a project.
+-- This plugin works with fugitive.
 
 ---@enum Actions
 local ACTIONS = {
     SAVE = 0,
-    INTERVAL = 1,
+    WAIT = 1,
 }
 
 ---Main return table for autocommit.nvim
 ---@type table
 local M = {
-    ---The program managing git.
-    ---@type string
-    handler = 'fugitive',
     ---@type table
     commit = {
         ---When to commit.
         ---@type Actions
         when = ACTIONS.SAVE,
-        ---How frequently to commit in seconds when committing on an interval.
-        ---@type integer?
-        freq = nil,
         ---@type fun()
         ---@return string
         header = function ()
@@ -31,12 +26,32 @@ local M = {
     },
 }
 
-M.create_commit = function ()
-    local dir = vim.cmd([[
+M.create_commit = function (...)
+    vim.cmd([[
     let dir = FugitiveGitDir()
     let _ = FugitiveExecute(["add", "."], dir)
     let _ = FugitiveExecute(["commit", "-m", "]]..M.commit.header()..[[", "-m", "]]..M.commit.body()..[["], dir )
     ]])
+end
+
+M.hook = function()
+    if M.commit.when == ACTIONS.SAVE then
+        vim.api.nvim_create_autocmd(
+            {'BufWritePost'},
+            {
+                buffer = 0,
+                callback = M.create_commit,
+            }
+        )
+    else -- M.commit.when == ACTIONS.WAIT
+        vim.api.nvim_create_autocmd(
+            {'CursorHold'},
+            {
+                buffer = 0,
+                callback = M.create_commit,
+            }
+        )
+    end
 end
 
 M.setup = function (opts)
@@ -48,6 +63,6 @@ M.setup = function (opts)
     )
 end
 
-M.create_commit()
+M.hook()
 
 return M
