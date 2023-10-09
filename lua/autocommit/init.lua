@@ -34,6 +34,7 @@ M.create_commit = function (...)
     ]])
 end
 
+---Attach the automcommands to Neovim when the hook method is called.
 M.hook = function()
     if M.commit.when == ACTIONS.SAVE then
         vim.api.nvim_create_autocmd(
