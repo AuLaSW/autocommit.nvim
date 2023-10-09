@@ -34,13 +34,9 @@ local M = {
 M.create_commit = function ()
     vim.cmd('echo g:loaded_fugitive')
     local dir = vim.cmd('echo FugitiveGitDir()')
+    print(dir)
     vim.cmd('echo FugitiveExecute(["add", "."], '..dir..')')
     vim.cmd('echo FugitiveExecute(["commit", "-m", "test"], '..dir..')')
-    --[[
-    if vim.cmd('empty(FugitiveGitDir())') then
-        vim.cmd('FugitiveExecute(\"-a -m '..M.commit.header()..'\n'..M.commit.body()..'\")')
-    end
-    --]]
 end
 
 M.setup = function (opts)
