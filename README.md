@@ -30,7 +30,7 @@ command:
 ```lua
 vim.keymap.set(
     'n',
-    '<Leader>ca',
+    '<Leader>ac',
     function (...)
         require('autocommit').hook()
     end
